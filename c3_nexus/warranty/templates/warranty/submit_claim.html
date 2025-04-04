@@ -1,0 +1,6 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="description">Describe the issue:</label>
+    <textarea name="description" required></textarea>
+    <button type="submit">Submit Claim</button>
+</form>

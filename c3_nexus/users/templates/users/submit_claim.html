@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Submit Claim{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Submit a Claim</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Dealership</label>
+            {{ form.dealership }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Product Name</label>
+            {{ form.product }}
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Amount ($)</label>
+            {{ form.amount }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{% url 'claims' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
