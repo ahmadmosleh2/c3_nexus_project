@@ -242,6 +242,26 @@
             padding: 10px;
             font-weight: bold;
         }
+        .step-nav-btn {
+            padding: 6px 16px;
+            font-weight: bold;
+            background-color: #e0e0e0;
+            color: black;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .step-nav-btn:hover {
+            background-color: #6a11cb;
+            color: white;
+        }
+
+        .step-nav-btn.active {
+            background-color: #007bff;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -262,110 +282,79 @@
         </div>
     </nav>
 
-    <div class="container">
-        <h2>Claims Overview</h2>
-        <div class="tab-container">
-            <button id="summary-btn" class="tab-btn active">Summary</button>
-            <button id="submit-claim-btn" class="tab-btn">Submit Claim</button>
+    <div class="container py-4">
+        <h2 class="mb-4">Claims Overview</h2>
+
+        <div class="mb-3">
+            <a href="{% url 'claims' %}" class="step-nav-btn active">Summary</a>
+            <a href="{% url 'submit_claim' %}?step=1" class="step-nav-btn">Submit Claim</a>
         </div>
+
+        <!-- Search and Filters -->
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Search Form -->
+            <form class="d-flex" method="get">
+            <input class="form-control me-2" name="search" placeholder="Search" style="width: 250px;" type="text" value="{{ search_query }}"/>
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+            <!-- Export Button -->
+            <div class="btn-group" role="group">
+                <a href="{% url 'export_claims' %}" class="btn btn-outline-dark">Export Data</a>
+                <a href="#" class="btn btn-outline-secondary">⚙</a>
+            </div>
+        </div>
+    
 
         <!-- Claims Table -->
-        <div id="claims-summary">
-            <div class="table-container mt-4">
-                <div class="d-flex justify-content-end mb-3">
-                    <button class="btn btn-light shadow-sm me-2">
-                        <i class="bi bi-download"></i> Export Data
-                
-                    </button>
-                    <button class="btn btn-light shadow-sm me-2">
-                    <span>⚙</span>
-                    </button>
-                </div>
-
-                <div class="d-flex justify-content-start mb-3">
-                    <button class="btn btn-light shadow-sm me-2">
-                        <i class="bi bi-funnel"></i> Filter
-                    </button>
-                    <button class="btn btn-light shadow-sm dropdown-toggle me-2">
-                        Most Recent
-                    </button>
-                    <input type="text" class="form-control w-auto" placeholder="Search 🔍">
-                </div>
-
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Claim ID</th>
-                            <th>Date Submitted</th>
-                            <th>Customer Name</th>
-                            <th>Dealership</th>
-                            <th>Product Name</th>
-                            <th>Claim Status</th>
-                            <th>Amount ($)</th>
-                            <th>Last Updated</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for claim in claims %}
-                        <tr>
-                            <td>{{ claim.id }}</td>
-                            <td>{{ claim.claim_date|date:"Y-m-d" }}</td>
-                            <td>{{ claim.user.username }}</td>
-                            <td>{{ claim.dealership }}</td>
-                            <td>{{ claim.product }}</td>
-                            <td>
-                                <span class="claim-status {% if claim.status == 'approved' %}approved{% elif claim.status == 'rejected' %}rejected{% elif claim.status == 'under_review' %}under-review{% else %}submitted{% endif %}">
-                                    {{ claim.get_status_display }}
-                                </span>
-                            </td>
-                            <td>${{ claim.amount }}</td>
-                            <td>{{ claim.last_updated|date:"Y-m-d" }}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm">View</button>
-                                <button class="btn btn-secondary btn-sm">Download</button>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="9" class="text-center">No claims found.</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-       <!-- Submit Claim Form -->
-       <div id="submit-claim-view" class="hidden">
-        <div class="d-flex">
-            <!-- Step Navigation -->
-            <div class="step-nav">
-                <div class="step active"><span class="step-icon">🔧</span>Step 1: General Information</div>
-                <div class="step inactive"><span class="step-icon">📄</span>Step 2: Problem</div>
-                <div class="step inactive"><span class="step-icon">💲</span>Step 3: Payment</div>
-            </div>
-
-            <!-- Form -->
-            <div class="form-container flex-grow-1">
-                <form method="post" action="{% url 'submit_claim' %}">
-                    {% csrf_token %}
-                    <div class="row mb-3">
-                        <div class="col-md-6"><input type="text" class="form-control" placeholder="First Name" required></div>
-                        <div class="col-md-6"><input type="text" class="form-control" placeholder="Last Name" required></div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6"><input type="text" class="form-control" placeholder="Phone Number" required></div>
-                        <div class="col-md-6"><input type="email" class="form-control" placeholder="Email" required></div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12"><input type="text" class="form-control" placeholder="Address" required></div>
-                    </div>
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Continue</button>
-                    </div>
-                </form>
-            </div>
+        <div class="table-responsive shadow-sm bg-white p-3 rounded">
+            <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Date Submitted</th>
+                        <th>Customer</th>
+                        <th>Dealership</th>
+                        <th>Product</th>
+                        <th>Status</th>
+                        <th>Amount ($)</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for claim in claims %}
+                    <tr>
+                        <td>{{ claim.id }}</td>
+                        <td>{{ claim.claim_date|date:"Y-m-d" }}</td>
+                        <td>{{ claim.user.username }}</td>
+                        <td>{{ claim.dealership }}</td>
+                        <td>{{ claim.product }}</td>
+                        <td>
+                            <span class="claim-status 
+                                {% if claim.status == 'approved' %}approved
+                                {% elif claim.status == 'rejected' %}rejected
+                                {% elif claim.status == 'under_review' %}under-review
+                                {% else %}submitted{% endif %}">
+                                {{ claim.get_status_display }}
+                            </span>
+                        </td>
+                        <td>${{ claim.amount }}</td>
+                        <td>{{ claim.last_updated|date:"Y-m-d" }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary">View</button>
+                            <button class="btn btn-sm btn-outline-secondary">Download</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="9" class="text-center">No claims found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+
+       
 </div>
 
 <script>

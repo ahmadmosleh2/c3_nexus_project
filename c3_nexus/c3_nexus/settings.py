@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-&&b=!z+c12=1@_s-baw25$6#($je7zdk()s#cj6rd81iqi*x^e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -66,6 +66,7 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': True,
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -141,11 +142,13 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 STATIC_URL = '/static/'
 
+# Look for static files inside each app and one central folder
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'c3_nexus', 'users', 'static'),  
+    BASE_DIR / "static",
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 LOGIN_REDIRECT_URL = 'dashboard'  # Redirect users to dashboard after login
 LOGOUT_REDIRECT_URL = 'login'     # Redirect users to login after logout
+

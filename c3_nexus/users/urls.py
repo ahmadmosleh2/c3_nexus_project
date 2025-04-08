@@ -6,6 +6,11 @@ from .views import user_logout, user_login, dashboard, claims_overview
 from .views import claims_overview, submit_claim
 from .views import inventory_overview
 from .views import crm_overview
+from .views import export_sales_data
+from .views import export_claims_csv
+from . import views
+
+
 
 urlpatterns = [
     path('', home, name='home'),
@@ -18,6 +23,13 @@ urlpatterns = [
 path('claims/submit/', submit_claim, name='submit_claim'),
     path('inventory/', inventory_overview, name='inventory'),
     path('', crm_overview, name='crm'),
-
+    path('export-sales-data/', export_sales_data, name='export_sales'),
+    path('claims/export/', export_claims_csv, name='export_claims'),
+    path('inventory/export/', views.export_inventory_csv, name='export_inventory'),
+    
+    
+    
 ]
+
+
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import AdminLog
-from .models import CustomUser, Claim
+from .models import CustomUser
 from django.contrib.auth import get_user_model
 
 # Register your models here.
@@ -14,4 +14,4 @@ class AdminLogAdmin(admin.ModelAdmin):
 CustomUser = get_user_model()  # Get the actual user model
 
 admin.site.register(CustomUser)  
-admin.site.register(Claim)  # 
+ 

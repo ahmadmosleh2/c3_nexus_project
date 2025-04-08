@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -173,17 +174,17 @@
 
         <!-- Filters, Search & Export -->
         <div class="filter-container mt-3">
-            <div>
-                <button class="export-btn">Filter <span>🔽</span></button>
-                <button class="export-btn">This Year <span>🔽</span></button>
-                <input type="text" class="search-box" placeholder="Search 🔍">
-            </div>
+            <form method="get" class="d-flex">
+                <input type="text" name="q" class="form-control me-2" placeholder="Search 🔍" value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-outline-primary">Search</button>
+            </form>
             <div class="export-settings">
                 
                 <button class="btn btn-light shadow-sm me-2">
-                    <i class="bi bi-download"></i> Export Data
+                    <a href="{% url 'export_inventory' %}" class="btn btn-outline-secondary">Export Data</a>
             
                 </button>
+                
                 <button class="btn btn-light shadow-sm me-2">
                 <span>⚙</span>
                 </button>
@@ -208,22 +209,25 @@
                 <tbody>
                     {% for item in inventory %}
                     <tr>
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.stock_level }} units</td>
-                        <td>
-                            <span class="stock-status {% if item.alert == 'LOW' %}low-stock{% elif item.alert == 'IN STOCK' %}in-stock{% else %}na-stock{% endif %}">
-                                {{ item.alert }}
-                            </span>
-                        </td>
-                        <td>{{ item.dealership }}</td>
-                        <td>{{ item.restock_date|date:"Y-m-d" }}</td>
-                        <td>{{ item.restock_recommendation }}</td>
+                      <td>{{ item.id|default:"N/A" }}</td>
+                      <td>{{ item.name|default:"N/A" }}</td>
+                      <td>{{ item.stock_level|default:"N/A" }}</td>
+                      <td>
+                        <span class="badge text-dark 
+                          {% if item.alert == 'LOW' %}bg-warning
+                          {% elif item.alert == 'IN STOCK' %}bg-success
+                          {% else %}bg-info
+                          {% endif %}
+                        ">
+                          {{ item.alert }}
+                        </span>
+                      </td>
+                      <td>{{ item.dealership|default:"N/A" }}</td>
+                      <td>{{ item.restock_date|default:"N/A" }}</td>
+                      <td>{{ item.restock_recommendation|default:"N/A" }}</td>
                     </tr>
-                    {% empty %}
-                    <tr><td colspan="7" class="text-center">No inventory data available.</td></tr>
                     {% endfor %}
-                </tbody>
+                  </tbody>
             </table>
         </div>
     </div>

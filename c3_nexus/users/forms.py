@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser  
-from .models import Claim
+from warranty.models import Claim
 
 
 
@@ -15,3 +15,5 @@ class ClaimForm(forms.ModelForm):
     class Meta:
         model = Claim
         fields = ['product', 'amount']
+
+
